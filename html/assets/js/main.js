@@ -2,6 +2,7 @@
 var events = (function() {
     // Encapsulated variables
 
+    var footerContainer = document.getElementById("ontap-container");
     var refreshButton = document.getElementById("refresh-button");
     var eventsList = document.getElementById("events-list");
 
@@ -9,7 +10,6 @@ var events = (function() {
     refreshButton.addEventListener('click', refreshEvents, false);
 
     function refreshEvents() {
-	alert("Query server for events from main.js.");
 	loadData('http://localhost:8000/data/events.html', eventsList);
     }
 
@@ -21,9 +21,11 @@ var events = (function() {
 		if((xhr.status >=200 && xhr.status <300) ||
                    xhr.status===304){
 
-  		    target.innerHTML += xhr.responseText;
+  		    target.innerHTML = xhr.responseText;
   		} else {
-  		    console.log(xhr.statusText);
+		    footerContainer.innerHTML += '<p class="error">Error getting ' +
+			target.name + ": "+ xhr.statusText + ", code "+
+			xhr.status + "</p>";
   		}
   	    }
 	}

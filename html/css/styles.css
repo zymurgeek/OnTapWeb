@@ -1,0 +1,6 @@
+footer p.error {
+	background:#d53630;
+	text-align:left;
+	padding: 0.9em;
+	color: #fff;
+}
