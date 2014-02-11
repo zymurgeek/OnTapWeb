@@ -20,7 +20,6 @@ var events = (function() {
   	    if (xhr.readyState == 4) {
 		if((xhr.status >=200 && xhr.status <300) ||
                    xhr.status===304){
-
   		    target.innerHTML = xhr.responseText;
   		} else {
 		    footerContainer.innerHTML += '<p class="error">Error getting ' +
