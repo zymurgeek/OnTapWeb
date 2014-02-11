@@ -6,11 +6,14 @@
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<h1>Events</h1>
-<ul>
-<li>(none)</li>
-</ul>
-<button id="refresh-button">Refresh events</button>
+  <h1>Events</h1>
+  <select name="events-list" id="events-list">
+    <option value="" selected="selected"> - Event - </option>
+    <!-- AJAX will load the rest of content -->
+  </select>
+  <br/>
+
+  <button id="refresh-button">Refresh events</button>
 </body>
 <script src="assets/js/main.js"></script>
 </html>
