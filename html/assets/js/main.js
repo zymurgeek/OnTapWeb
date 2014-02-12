@@ -10,17 +10,18 @@ var events = (function() {
     refreshButton.addEventListener('click', refreshEvents, false);
 
     function refreshEvents() {
-	loadData('http://localhost:8000/data/events.html', eventsList);
+	loadJsonData('http://localhost:8000/data/events.json', eventsList);
     }
 
-    function loadData(dataUrl, target) {
+    function loadJsonData(dataUrl, target) {
 	var xhr = new XMLHttpRequest();
+	xhr.overrideMimeType("application/json");
 	xhr.open('GET', dataUrl, true);
 	xhr.onreadystatechange = function() {
   	    if (xhr.readyState == 4) {
 		if((xhr.status >=200 && xhr.status <300) ||
                    xhr.status===304){
-  		    target.innerHTML = xhr.responseText;
+  		    loadJsonResponse(xhr.responseText, target);
   		} else {
 		    footerContainer.innerHTML += '<p class="error">Error getting ' +
 			target.name + ": "+ xhr.statusText + ", code "+
@@ -29,6 +30,18 @@ var events = (function() {
   	    }
 	}
 	xhr.send();
+    }
+
+    function loadJsonResponse(jsonResponseText, target) {
+	target.innerHTML = "";
+	console.log("JSON=" + jsonResponseText);
+        var jsonData = JSON.parse(jsonResponseText);
+
+        var line = '';
+        for(var i= 0; i < jsonData.length; i++) {
+            line = '<p><a href="http://misdb.com/barleylegalapp/getbeersforevent.aspx?id=' + jsonData[i].ID + '">' + jsonData[i].EventName + '</a></p>';
+	    target.innerHTML += line;
+        }
     }
 
 })();
