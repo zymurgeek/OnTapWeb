@@ -34,14 +34,17 @@ var events = (function() {
 
     function loadJsonResponse(jsonResponseText, target) {
 	target.innerHTML = "";
-	console.log("JSON=" + jsonResponseText);
         var jsonData = JSON.parse(jsonResponseText);
 
         var line = '';
         for(var i= 0; i < jsonData.length; i++) {
-            line = '<p><a href="http://misdb.com/barleylegalapp/getbeersforevent.aspx?id=' + jsonData[i].ID + '">' + jsonData[i].EventName + '</a></p>';
-	    target.innerHTML += line;
+	    if ( jsonData[i].Active == true && jsonData[i].Deleted == false ) {
+		line = '<p><a href="http://misdb.com/barleylegalapp/getbeersforevent.aspx?id=' 
+		    + jsonData[i].ID + '">' + jsonData[i].EventName + '</a></p>';
+		target.innerHTML += line;
+	    }
         }
     }
 
+    refreshEvents();
 })();
