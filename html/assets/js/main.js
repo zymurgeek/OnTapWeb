@@ -33,15 +33,28 @@ var events = (function() {
 	xhr.send();
     }
 
+    dateTimeReviver = function (key, value) {
+	var a;
+	if (typeof value === 'string') {
+	    if (value.indexOf('\/Date(') != -1) {
+		var myDate = new Date(parseInt(value.replace(/\/+Date\(([\d+-]+)\)\/+/, '$1')));
+		return myDate;
+            }
+	}
+	return value;
+    }
+
     function loadJsonResponse(jsonResponseText, target) {
 	target.innerHTML = "";
-        var jsonData = JSON.parse(jsonResponseText);
+        var jsonData = JSON.parse(jsonResponseText, dateTimeReviver);
 
         var line = '';
         for(var i= 0; i < jsonData.length; i++) {
 	    if ( jsonData[i].Active == true && jsonData[i].Deleted == false ) {
 		line = '<p><a href="http://misdb.com/barleylegalapp/getbeersforevent.aspx?id=' 
-		    + jsonData[i].ID + '">' + jsonData[i].EventName + '</a></p>';
+		    + jsonData[i].ID + '">' + jsonData[i].EventName
+		    + ' ' + jsonData[i].EventDate
+		    + '</a></p>';
 		target.innerHTML += line;
 	    }
         }
