@@ -10,7 +10,8 @@ var events = (function() {
     refreshButton.addEventListener('click', refreshEvents, false);
 
     function refreshEvents() {
-	loadJsonData('http://localhost:8000/data/events.json', eventsList);
+	loadJsonData('barley_legal_events_proxy.php?ble_path=getevent.aspx', 
+		     eventsList);
     }
 
     function loadJsonData(dataUrl, target) {
