@@ -15,14 +15,14 @@ define ('HOSTNAME', 'http://misdb.com/barleylegalapp/');
 
 // Get the REST call path from the AJAX application
 // Is it a POST or a GET?
-$path = ($_POST['ble_path']) ? $_POST['ble_path'] : $_GET['ble_path'];
+$path = (isset($_POST['ble_path'])) ? $_POST['ble_path'] : $_GET['ble_path'];
 $url = HOSTNAME.$path;
 
 // Open the Curl session
 $session = curl_init($url);
 
 // If it's a POST, put the POST data in the body
-if ($_POST['ble_path']) {
+if (isset($_POST['ble_path'])) {
 	$postvars = '';
 	while ($element = current($_POST)) {
 		$postvars .= urlencode(key($_POST)).'='.urlencode($element).'&';
