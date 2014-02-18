@@ -1,5 +1,5 @@
 // Global namespace events
-var events = (function() {
+var events = (function($) {
     // Encapsulated variables
 
     var footerContainer = document.getElementById("ontap-container");
@@ -92,4 +92,4 @@ var events = (function() {
     }
 
     refreshEvents();
-})();
+})(jQuery);
