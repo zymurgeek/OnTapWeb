@@ -4,3 +4,8 @@ footer p.error {
 	padding: 0.9em;
 	color: #fff;
 }
+
+td {
+    padding-right:1em;
+}
+

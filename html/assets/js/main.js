@@ -68,13 +68,13 @@ var events = (function() {
         var line = '';
         for(var i= 0; i < jsonData.length; i++) {
 	    if ( jsonData[i].Active == true && jsonData[i].Deleted == false ) {
-		line = '<p>'
+		line = '<tr><td>'
 		    + formatEventDate(jsonData[i].EventDate)
-		    + ' '
+		    + '</td><td> '
 		    + '<a href="http://misdb.com/barleylegalapp/getbeersforevent.aspx?id=' 
 		    + jsonData[i].ID + '">'
 		    + jsonData[i].EventName
-		    + '</a></p>';
+		    + '</a></td></tr>';
 		target.innerHTML += line;
 	    }
         }
