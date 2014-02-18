@@ -5,7 +5,8 @@ var events = (function() {
     var footerContainer = document.getElementById("ontap-container");
     var refreshButton = document.getElementById("refresh-button");
     var refreshTimestamp = document.getElementById("refresh-timestamp");
-    var eventsList = document.getElementById("events-list");
+    var currentEventsList = document.getElementById("current-events-list");
+    var pastEventsList = document.getElementById("past-events-list");
 
     // Register event listeners
     refreshButton.addEventListener('click', refreshEvents, false);
@@ -13,12 +14,12 @@ var events = (function() {
     function refreshEvents() {
 	refreshButton.disabled = true;
 	loadJsonData('barley_legal_events_proxy.php?ble_path=getevent.aspx', 
-		     eventsList);
+		     currentEventsList, pastEventsList);
 	refreshTimestamp.innerHTML = new Date();
 	refreshButton.disabled = false;
     }
 
-    function loadJsonData(dataUrl, target) {
+    function loadJsonData(dataUrl, currentList, pastList) {
 	var xhr = new XMLHttpRequest();
 	xhr.overrideMimeType("application/json");
 	xhr.open('GET', dataUrl, true);
@@ -26,7 +27,9 @@ var events = (function() {
   	    if (xhr.readyState == 4) {
 		if((xhr.status >=200 && xhr.status <300) ||
                    xhr.status===304){
-  		    parseAndDisplayJsonResponse(xhr.responseText, target);
+  		    parseAndDisplayJsonResponse(xhr.responseText, 
+						currentList, 
+						pastList);
   		} else {
 		    footerContainer.innerHTML += '<p class="error">Error getting ' +
 			target.name + ": "+ xhr.statusText + ", code "+
@@ -61,21 +64,29 @@ var events = (function() {
     }
 
 
-    function parseAndDisplayJsonResponse(jsonResponseText, target) {
-	target.innerHTML = "";
+    function parseAndDisplayJsonResponse(jsonResponseText, currentList,
+					 pastList) {
+	var now = new Date();
+	currentList.innerHTML = "";
+	pastList.innerHTML = "";
         var jsonData = JSON.parse(jsonResponseText, dateTimeReviver);
 
         var line = '';
         for(var i= 0; i < jsonData.length; i++) {
 	    if ( jsonData[i].Active == true && jsonData[i].Deleted == false ) {
+		eventDate = jsonData[i].EventDate;
 		line = '<tr><td>'
-		    + formatEventDate(jsonData[i].EventDate)
+		    + formatEventDate(eventDate)
 		    + '</td><td> '
 		    + '<a href="http://misdb.com/barleylegalapp/getbeersforevent.aspx?id=' 
 		    + jsonData[i].ID + '">'
 		    + jsonData[i].EventName
 		    + '</a></td></tr>';
-		target.innerHTML += line;
+		if (eventDate >= now) {
+		    currentList.innerHTML = line + currentList.innerHTML;
+		} else {
+		    pastList.innerHTML += line;
+		}
 	    }
         }
     }

@@ -1,3 +1,7 @@
+footer {
+    padding-top:2em;
+}
+
 footer p.error {
 	background:#d53630;
 	text-align:left;
