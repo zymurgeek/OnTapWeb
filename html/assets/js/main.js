@@ -1,22 +1,20 @@
 // Global namespace events
 var events = (function($) {
     // Encapsulated variables
-
     var footerContainer = document.getElementById("ontap-container");
-    var refreshButton = document.getElementById("refresh-button");
     var refreshTimestamp = document.getElementById("refresh-timestamp");
     var currentEventsList = document.getElementById("current-events-list");
     var pastEventsList = document.getElementById("past-events-list");
 
     // Register event listeners
-    refreshButton.addEventListener('click', refreshEvents, false);
+    $('#refresh-button').on('click', refreshEvents);
 
     function refreshEvents() {
-	refreshButton.disabled = true;
+	$('#refresh-button').prop("disabled",true);
 	loadJsonData('barley_legal_events_proxy.php?ble_path=getevent.aspx', 
 		     currentEventsList, pastEventsList);
 	refreshTimestamp.innerHTML = new Date();
-	refreshButton.disabled = false;
+	$('#refresh-button').prop("disabled",false);
     }
 
     function loadJsonData(dataUrl, currentList, pastList) {
