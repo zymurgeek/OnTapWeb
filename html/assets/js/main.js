@@ -1,9 +1,5 @@
 // Global namespace events
 var events = (function($) {
-    // Encapsulated variables
-    var currentEventsList = document.getElementById("current-events-list");
-    var pastEventsList = document.getElementById("past-events-list");
-
     // Register event listeners
     $('#refresh-button').on('click', refreshEvents);
 
@@ -11,7 +7,7 @@ var events = (function($) {
     function refreshEvents() {
 	$('#refresh-button').prop("disabled",true);
 	loadJsonData('barley_legal_events_proxy.php?ble_path=getevent.aspx', 
-		     currentEventsList, pastEventsList);
+		     $('#current-events-list'), $('#past-events-list'));
 	$('#refresh-timestamp').html(new Date());
 	$('#refresh-button').prop("disabled",false);
     }
@@ -69,8 +65,8 @@ var events = (function($) {
     function parseAndDisplayJsonResponse(jsonResponseText, currentList,
 					 pastList) {
 	var now = new Date();
-	currentList.innerHTML = "";
-	pastList.innerHTML = "";
+	var currentListHtml = "";
+	var pastListHtml = "";
         var jsonData = JSON.parse(jsonResponseText, dateTimeReviver);
 
         var line = '';
@@ -86,12 +82,14 @@ var events = (function($) {
 		    + jsonData[i].EventName
 		    + '</a></td></tr>';
 		if (eventDate >= now) {
-		    currentList.innerHTML = line + currentList.innerHTML;
+		    currentListHtml = line + currentListHtml;
 		} else {
-		    pastList.innerHTML += line;
+		    pastListHtml += line;
 		}
 	    }
         }
+	currentList.html(currentListHtml);
+	pastList.html(pastListHtml);
     }
 
     refreshEvents();
