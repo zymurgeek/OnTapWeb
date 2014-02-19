@@ -1,21 +1,21 @@
 // Global namespace events
 var events = (function($) {
     // Encapsulated variables
-    var footerContainer = document.getElementById("ontap-container");
-    var refreshTimestamp = document.getElementById("refresh-timestamp");
     var currentEventsList = document.getElementById("current-events-list");
     var pastEventsList = document.getElementById("past-events-list");
 
     // Register event listeners
     $('#refresh-button').on('click', refreshEvents);
 
+
     function refreshEvents() {
 	$('#refresh-button').prop("disabled",true);
 	loadJsonData('barley_legal_events_proxy.php?ble_path=getevent.aspx', 
 		     currentEventsList, pastEventsList);
-	refreshTimestamp.innerHTML = new Date();
+	$('#refresh-timestamp').html(new Date());
 	$('#refresh-button').prop("disabled",false);
     }
+
 
     function loadJsonData(dataUrl, currentList, pastList) {
 	var xhr = new XMLHttpRequest();
@@ -29,20 +29,24 @@ var events = (function($) {
 						currentList, 
 						pastList);
   		} else {
-		    footerContainer.innerHTML += '<p class="error">Error getting ' +
-			target.name + ": "+ xhr.statusText + ", code "+
-			xhr.status + "</p>";
+		    var errorText = '<p class="error">' 
+			+ 'Error getting events: ' + xhr.statusText 
+			+ ", code " + xhr.status + "</p>";
+		    $('#footer-container').html(errorText);
+		    
   		}
   	    }
 	}
 	xhr.send();
     }
 
+
     dateTimeReviver = function (key, value) {
 	var a;
 	if (typeof value === 'string') {
 	    if (value.indexOf('\/Date(') != -1) {
-		var myDate = new Date(parseInt(value.replace(/\/+Date\(([\d+-]+)\)\/+/, '$1')));
+		var myDate = new Date(parseInt(value.replace
+			(/\/+Date\(([\d+-]+)\)\/+/, '$1')));
 		return myDate;
             }
 	}
@@ -76,7 +80,8 @@ var events = (function($) {
 		line = '<tr><td>'
 		    + formatEventDate(eventDate)
 		    + '</td><td> '
-		    + '<a href="http://misdb.com/barleylegalapp/getbeersforevent.aspx?id=' 
+		    + '<a href="http://misdb.com/barleylegalapp/'
+		    + 'getbeersforevent.aspx?id=' 
 		    + jsonData[i].ID + '">'
 		    + jsonData[i].EventName
 		    + '</a></td></tr>';
