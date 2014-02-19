@@ -13,27 +13,50 @@ var events = (function($) {
     }
 
 
-    function loadJsonData(dataUrl, currentList, pastList) {
-	var xhr = new XMLHttpRequest();
-	xhr.overrideMimeType("application/json");
-	xhr.open('GET', dataUrl, true);
-	xhr.onreadystatechange = function() {
-  	    if (xhr.readyState == 4) {
-		if((xhr.status >=200 && xhr.status <300) ||
-                   xhr.status===304){
-  		    parseAndDisplayJsonResponse(xhr.responseText, 
-						currentList, 
-						pastList);
-  		} else {
-		    var errorText = '<p class="error">' 
-			+ 'Error getting events: ' + xhr.statusText 
-			+ ", code " + xhr.status + "</p>";
-		    $('#footer-container').html(errorText);
-		    
-  		}
-  	    }
+    function isValidObject(objToTest) {
+	if (null == objToTest) return false;
+	if ("undefined" == typeof(objToTest)) return false;
+	return true;
+    }
+
+
+    $.ajaxSetup({
+	converters: {
+            "json jsonevents": function(data) {
+		if (isValidObject(data)) {
+                    $.each(data, function(i,o){
+			if (o.EventDate) {
+                            data[i].EventDate = dateTimeReviver(null, o.EventDate);
+			}
+                    });
+                    return data;
+		} else {
+                    throw exceptionObject;
+		}
+            }
 	}
-	xhr.send();
+    });
+
+
+    function loadJsonData(dataUrl, currentList, pastList) {
+	$.ajax({
+	    url: dataUrl,
+	    type: 'GET',
+	    dataType: 'jsonevents'
+	}).done(function(data){
+	    parseAndDisplayJsonResponse(data, currentList, pastList);
+	}).fail(function(jqXHR, textStatus, error) {
+		    var errorText = '<p class="error">' 
+			+ 'Error getting events: ' + error 
+			+ ", code " + jqXHR.status + "</p>";
+		    $('#footer-container').html(errorText);
+	});
+    }
+
+
+    function jsonWithDateParser (data, type) {
+	parsedData = JSON.parse(data, dateTimeReviver);
+	return parsedData;
     }
 
 
@@ -41,8 +64,12 @@ var events = (function($) {
 	var a;
 	if (typeof value === 'string') {
 	    if (value.indexOf('\/Date(') != -1) {
-		var myDate = new Date(parseInt(value.replace
-			(/\/+Date\(([\d+-]+)\)\/+/, '$1')));
+		var dateInt1 = value.replace
+		(/\/+Date\(([\d+-]+)\)\/+/, '$1');
+		var dateInt2 = dateInt1.replace
+		(/(\d+)[+-]?\d*/, '$1');
+		var dateInt = parseInt(dateInt2);
+		var myDate = new Date(dateInt);
 		return myDate;
             }
 	}
@@ -62,12 +89,11 @@ var events = (function($) {
     }
 
 
-    function parseAndDisplayJsonResponse(jsonResponseText, currentList,
+    function parseAndDisplayJsonResponse(jsonData, currentList,
 					 pastList) {
 	var now = new Date();
 	var currentListHtml = "";
 	var pastListHtml = "";
-        var jsonData = JSON.parse(jsonResponseText, dateTimeReviver);
 
         var line = '';
         for(var i= 0; i < jsonData.length; i++) {
