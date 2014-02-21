@@ -5,11 +5,8 @@ var events = (function($) {
 
 
     function refreshEvents() {
-	$('#refresh-button').prop("disabled",true);
 	loadJsonData('barley_legal_events_proxy.php?ble_path=getevent.aspx', 
 		     $('#current-events-list'), $('#past-events-list'));
-	$('#refresh-timestamp').html(new Date());
-	$('#refresh-button').prop("disabled",false);
     }
 
 
@@ -39,17 +36,21 @@ var events = (function($) {
 
 
     function loadJsonData(dataUrl, currentList, pastList) {
+	$('#refresh-button').prop("disabled",true);
 	$.ajax({
 	    url: dataUrl,
 	    type: 'GET',
 	    dataType: 'jsonevents'
 	}).done(function(data){
 	    parseAndDisplayJsonResponse(data, currentList, pastList);
+	    $('#refresh-timestamp').html(new Date());
 	}).fail(function(jqXHR, textStatus, error) {
 		    var errorText = '<p class="error">' 
 			+ 'Error getting events: ' + error 
 			+ ", code " + jqXHR.status + "</p>";
 		    $('#footer-container').html(errorText);
+	}).always(function(){
+	    $('#refresh-button').prop("disabled",false);
 	});
     }
 
