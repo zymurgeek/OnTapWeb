@@ -8,10 +8,10 @@
 // Author: Jason Levitt
 // December 7th, 2005
 
+define ('BETA_SERVER', 'http://misdb.com/barleylegalapp/');
+define ('PRODUCTION_SERVER', 'http://barleylegalevents.com/barleylegal/');
 // Allowed hostname
-define ('HOSTNAME', 'http://misdb.com/barleylegalapp/');
-// Beta server:  http://misdb.com/barleylegalapp/
-// Production server:  http://barleylegalevents.com/barleylegal/
+define ('HOSTNAME', BETA_SERVER);
 
 // Get the REST call path from the AJAX application
 // Is it a POST or a GET?
