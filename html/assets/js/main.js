@@ -1,22 +1,5 @@
 // Global namespace events
 var events = (function($) {
-    // Register event listeners
-    $('#refresh-button').on('click', refreshEvents);
-
-
-    function refreshEvents() {
-	loadJsonData('barley_legal_events_proxy.php?ble_path=getevent.aspx', 
-		     $('#current-events-list'), $('#past-events-list'));
-    }
-
-
-    function isValidObject(objToTest) {
-	if (null == objToTest) return false;
-	if ("undefined" == typeof(objToTest)) return false;
-	return true;
-    }
-
-
     $.ajaxSetup({
 	converters: {
             "json jsonevents": function(data) {
@@ -33,6 +16,23 @@ var events = (function($) {
             }
 	}
     });
+
+
+    // Register event listeners
+    $('#refresh-button').on('click', refreshEvents);
+
+
+    function refreshEvents() {
+	loadJsonData('barley_legal_events_proxy.php?ble_path=getevent.aspx', 
+		     $('#current-events-list'), $('#past-events-list'));
+    }
+
+
+    function isValidObject(objToTest) {
+	if (null == objToTest) return false;
+	if ("undefined" == typeof(objToTest)) return false;
+	return true;
+    }
 
 
     function loadJsonData(dataUrl, currentList, pastList) {
